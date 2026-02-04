@@ -1,8 +1,8 @@
 /**
  * Modelo de datos para Solicitud Operativa
- * 
+ * 202204496 Rodrigo Sebastian Castro Aguilar
  * SOLID APLICADO:
- * ✅ SRP (Single Responsibility Principle)
+ * SRP (Single Responsibility Principle)
  * - Este archivo tiene UNA SOLA responsabilidad: definir los tipos de datos
  */
 

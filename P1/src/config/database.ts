@@ -1,8 +1,8 @@
 /**
  * Configuración de conexión a PostgreSQL
- * 
+ * 202204496 Rodrigo Sebastian Castro Aguilar
  * SOLID APLICADO:
- * ✅ SRP (Single Responsibility Principle)
+ * SRP (Single Responsibility Principle)
  * - Esta clase tiene UNA SOLA responsabilidad: gestionar la conexión a la base de datos
  */
 
@@ -41,7 +41,7 @@ class Database {
     `;
     
     await this.pool.query(query);
-    console.log('✅ Tabla creada o ya existe');
+    console.log('Tabla creada o ya existe');
   }
 }
 

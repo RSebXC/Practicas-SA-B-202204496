@@ -1,8 +1,8 @@
 /**
  * Archivo principal de la aplicación
- * 
+ * 202204496 Rodrigo Sebastian Castro Aguilar
  * SOLID APLICADO:
- * ✅ DIP - Inyección de Dependencias centralizada
+ * DIP - Inyección de Dependencias centralizada
  */
 
 import express from 'express';
@@ -35,10 +35,10 @@ async function iniciar() {
     await database.inicializarTabla();
     
     app.listen(PORT, () => {
-      console.log(`🚀 Servidor en http://localhost:${PORT}`);
+      console.log(`Servidor en http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('Error:', error);
     process.exit(1);
   }
 }

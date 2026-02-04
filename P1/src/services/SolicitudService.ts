@@ -1,11 +1,11 @@
 /**
  * Servicio de Solicitudes Operativas
- * 
+ * 202204496 Rodrigo Sebastian Castro Aguilar
  * SOLID APLICADO:
- * ✅ SRP (Single Responsibility Principle)
+ * SRP (Single Responsibility Principle)
  * - Responsabilidad única: gestionar la lógica de negocio
  * 
- * ✅ DIP (Dependency Inversion Principle)
+ * DIP (Dependency Inversion Principle)
  * - Depende de la abstracción Pool, no de implementación específica
  * - Recibe dependencias por inyección
  */

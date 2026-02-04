@@ -1,4 +1,5 @@
 -- Script de inicialización de base de datos
+-- 202204496 Rodrigo Sebastian Castro Aguilar
 -- Práctica 1 - Software Avanzado
 
 -- Eliminar tabla si existe (para reiniciar)

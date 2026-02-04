@@ -1,9 +1,9 @@
 /**
  * Controlador de Solicitudes
- * 
+ * 202204496 Rodrigo Sebastian Castro Aguilar
  * SOLID APLICADO:
- * ✅ SRP - Responsabilidad única: manejar peticiones HTTP
- * ✅ DIP - Depende del servicio por inyección
+ * SRP - Responsabilidad única: manejar peticiones HTTP
+ * DIP - Depende del servicio por inyección
  */
 
 import { Request, Response } from 'express';

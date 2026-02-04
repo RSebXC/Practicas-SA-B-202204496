@@ -1,8 +1,8 @@
 /**
  * Rutas de la API
- * 
+ * 202204496 Rodrigo Sebastian Castro Aguilar
  * SOLID APLICADO:
- * ✅ SRP - Responsabilidad única: definir las rutas HTTP
+ * SRP - Responsabilidad única: definir las rutas HTTP
  */
 
 import { Router } from 'express';

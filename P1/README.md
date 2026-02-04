@@ -6,7 +6,7 @@
 
 ---
 
-## 📋 Descripción
+## Descripción
 
 API REST desarrollada en Node.js con TypeScript para gestionar solicitudes operativas de una academia ficticia. El proyecto aplica principios SOLID y buenas prácticas de código limpio.
 
