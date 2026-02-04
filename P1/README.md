@@ -1,7 +1,8 @@
 # Práctica 1 - API REST para Gestión de Solicitudes Operativas
 
-**Estudiante:** Sebastian
+**Estudiante:** Rodrigo Sebastian Castro Aguilar
 **Sección:** B
+**Carné** 202204496
 **Curso:** Software Avanzado - Universidad de San Carlos de Guatemala
 
 ---
@@ -12,7 +13,7 @@ API REST desarrollada en Node.js con TypeScript para gestionar solicitudes opera
 
 ---
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 - **Node.js** - Runtime
 - **TypeScript** - Tipado estático
@@ -22,14 +23,18 @@ API REST desarrollada en Node.js con TypeScript para gestionar solicitudes opera
 
 ---
 
-## ⚙️ Instalación
+## Instalación
 
 ```bash
 # 1. Instalar dependencias
 npm install
 
-# 2. Crear archivo .env (copiar de .env.example)
-# Agregar las credenciales de tu base de datos
+# 2. Crear archivo .env
+DB_HOST=db.mmkoqfepuvcocqlkrdpz.supabase.co
+DB_PORT=5432
+DB_NAME=postgres
+DB_USER=postgres
+DB_PASSWORD=Rodrigo27050421.
 
 # 3. Ejecutar en desarrollo
 npm run dev
@@ -37,7 +42,7 @@ npm run dev
 
 ---
 
-## 🌐 Endpoints
+## Endpoints
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
@@ -76,7 +81,63 @@ POST /api/solicitudes
 
 ---
 
-## 🏗️ Principios SOLID Aplicados
+## Explicación de los Principios SOLID
+
+Antes de mostrar qué principios usé en mi código, voy a explicar qué significa cada uno de los 5 principios SOLID:
+
+### Single Responsibility Principle (SRP)
+
+Este principio dice que cada clase o módulo debe hacer una sola cosa. Es como si cada empleado en una empresa tuviera un solo trabajo específico. El chef cocina, el mesero atiende, y el cajero cobra. Ninguno hace el trabajo del otro.
+
+En programación, esto significa que si tengo una clase que maneja la base de datos, esa clase solo debe conectarse y hacer consultas. No debería validar datos, ni manejar peticiones HTTP, ni hacer otra cosa que no sea trabajar con la base de datos. Así, si necesito cambiar algo de la base de datos, solo modifico esa clase y no afecto al resto del código.
+
+La ventaja es que el código es más fácil de entender y de mantener. Si algo falla, sé exactamente dónde buscar.
+
+---
+
+### Open/Closed Principle (OCP)
+
+Este principio dice que el código debe estar abierto para extenderse pero cerrado para modificarse. Suena raro, pero la idea es que si quiero agregar una nueva funcionalidad, no debería tener que cambiar el código que ya funciona.
+
+Es como un enchufe eléctrico: puedo conectar diferentes aparatos (teléfono, laptop, lámpara) sin tener que modificar el enchufe cada vez. El enchufe está "cerrado" porque no lo cambio, pero está "abierto" porque acepta diferentes dispositivos.
+
+En programación, esto se logra usando interfaces o clases abstractas. Si mañana quiero cambiar de una base de datos PostgreSQL a MongoDB, debería poder hacerlo sin tocar todo mi código, solo creando una nueva implementación.
+
+---
+
+### Liskov Substitution Principle (LSP)
+
+Este principio dice que si tengo una clase hija que hereda de una clase padre, debería poder usar la clase hija en cualquier lugar donde usaba la clase padre, sin que nada se rompa.
+
+Por ejemplo, si tengo una clase "Vehículo" y una clase "Auto" que hereda de Vehículo, entonces en cualquier lugar de mi código donde espero un Vehículo, debería poder usar un Auto sin problemas. El Auto debe comportarse como un Vehículo en todo momento.
+
+Si la clase hija cambia el comportamiento esperado de la clase padre de forma que rompe el código, entonces estoy violando este principio. Es importante para que la herencia sea útil y no cause errores inesperados.
+
+---
+
+### Interface Segregation Principle (ISP)
+
+Este principio dice que es mejor tener varias interfaces pequeñas y específicas que una interfaz grande con un montón de métodos que quizás no necesites.
+
+Imagina un gimnasio con diferentes tipos de membresías: una solo para pesas, otra solo para clases de yoga, y una completa. No tiene sentido obligar a alguien que solo quiere hacer yoga a pagar por el acceso a las pesas que nunca va a usar.
+
+En programación, si tengo una interfaz con 20 métodos pero un cliente solo necesita 3, estoy forzando a ese cliente a depender de 17 métodos que no le importan. Es mejor dividir esa interfaz en varias más pequeñas, cada una con métodos relacionados entre sí.
+
+---
+
+### Dependency Inversion Principle (DIP)
+
+Este principio dice que las partes importantes del código (alto nivel) no deben depender directamente de las partes de implementación (bajo nivel). En lugar de eso, ambas deben depender de abstracciones.
+
+Por ejemplo, cuando enchufo mi laptop a un tomacorriente, mi laptop no necesita saber si la electricidad viene de una planta solar, hidroeléctrica o nuclear. Solo necesita saber que el tomacorriente le da 110V. La "abstracción" aquí es el tomacorriente estándar.
+
+En programación, esto significa que mi servicio no debería crear su propia conexión a la base de datos internamente. En cambio, debería recibir esa conexión como un parámetro (inyección de dependencias). Así, si mañana quiero cambiar la forma en que me conecto a la base de datos, solo cambio qué le paso al servicio, sin tocar el código del servicio.
+
+Este principio hace que el código sea más flexible y más fácil de probar, porque puedo "inyectar" versiones de prueba de las dependencias.
+
+---
+
+## Principios SOLID Aplicados
 
 En este proyecto apliqué **dos principios SOLID**: **SRP** y **DIP**. Estos fueron los más relevantes para mantener el código organizado y flexible. A continuación explico cada uno con ejemplos reales del código.
 
@@ -89,7 +150,7 @@ Este principio significa que cada clase o archivo debe encargarse de UNA SOLA co
 
 #### Evidencia en el código:
 
-**📁 `src/config/database.ts`** — Su única responsabilidad es **gestionar la conexión a PostgreSQL**
+**`src/config/database.ts`** — Su única responsabilidad es **gestionar la conexión a PostgreSQL**
 
 ```typescript
 class Database {
@@ -110,13 +171,13 @@ class Database {
   }
 }
 ```
-- ✅ Solo conecta con la base de datos
-- ✅ No hace validaciones ni lógica de negocio
-- ✅ Si cambio de base de datos, solo toco este archivo
+- Solo conecta con la base de datos
+- No hace validaciones ni lógica de negocio
+- Si cambio de base de datos, solo toco este archivo
 
 ---
 
-**📁 `src/models/Solicitud.ts`** — Su única responsabilidad es **definir la estructura de datos**
+**`src/models/Solicitud.ts`** — Su única responsabilidad es **definir la estructura de datos**
 
 ```typescript
 export interface SolicitudOperativa {
@@ -128,13 +189,13 @@ export interface SolicitudOperativa {
   estado: 'registrada' | 'en_proceso' | 'finalizada';
 }
 ```
-- ✅ Solo define tipos de datos
-- ✅ No tiene lógica ni acceso a base de datos
-- ✅ Si cambio el modelo, solo toco este archivo
+- Solo define tipos de datos
+- No tiene lógica ni acceso a base de datos
+- Si cambio el modelo, solo toco este archivo
 
 ---
 
-**📁 `src/services/SolicitudService.ts`** — Su única responsabilidad es **la lógica de negocio**
+**`src/services/SolicitudService.ts`** — Su única responsabilidad es **la lógica de negocio**
 
 ```typescript
 export class SolicitudService {
@@ -168,13 +229,13 @@ export class SolicitudService {
   }
 }
 ```
-- ✅ Solo se encarga de las operaciones de datos
-- ✅ No maneja HTTP ni respuestas
-- ✅ Si cambio la lógica de negocio, solo toco este archivo
+- Solo se encarga de las operaciones de datos
+- No maneja HTTP ni respuestas
+- Si cambio la lógica de negocio, solo toco este archivo
 
 ---
 
-**📁 `src/controllers/SolicitudController.ts`** — Su única responsabilidad es **manejar peticiones HTTP**
+**`src/controllers/SolicitudController.ts`** — Su única responsabilidad es **manejar peticiones HTTP**
 
 ```typescript
 export class SolicitudController {
@@ -194,13 +255,13 @@ export class SolicitudController {
   };
 }
 ```
-- ✅ Solo recibe el request y devuelve la respuesta
-- ✅ No tiene lógica de negocio ni acceso a BD
-- ✅ Delega toda la lógica al servicio
+- Solo recibe el request y devuelve la respuesta
+- No tiene lógica de negocio ni acceso a BD
+- Delega toda la lógica al servicio
 
 ---
 
-**📁 `src/routes/solicitudRoutes.ts`** — Su única responsabilidad es **definir las rutas**
+**`src/routes/solicitudRoutes.ts`** — Su única responsabilidad es **definir las rutas**
 
 ```typescript
 export function crearRutas(controller: SolicitudController): Router {
@@ -216,8 +277,8 @@ export function crearRutas(controller: SolicitudController): Router {
   return router;
 }
 ```
-- ✅ Solo mapea URLs a métodos del controlador
-- ✅ No tiene lógica ni manipulación de datos
+-  Solo mapea URLs a métodos del controlador
+-  No tiene lógica ni manipulación de datos
 
 ---
 
@@ -228,7 +289,7 @@ Este principio significa que las clases no deben crear sus propias dependencias 
 
 #### Evidencia en el código:
 
-**📁 `src/index.ts`** — Aquí se hace la inyección de dependencias
+** `src/index.ts`** — Aquí se hace la inyección de dependencias
 
 ```typescript
 // 1. Obtener conexión a BD (nivel bajo)
@@ -244,49 +305,48 @@ const solicitudController = new SolicitudController(solicitudService);
 const solicitudRoutes = crearRutas(solicitudController);
 ```
 
-- ✅ Todas las dependencias se crean en UN SOLO lugar
-- ✅ Cada clase recibe lo que necesita desde afuera
-- ✅ Si cambio la base de datos, solo cambio la inyección aquí
+- Todas las dependencias se crean en UN SOLO lugar
+- Cada clase recibe lo que necesita desde afuera
+- Si cambio la base de datos, solo cambio la inyección aquí
 
 ---
 
-**📁 `src/services/SolicitudService.ts`** — Recibe la conexión por inyección
+** `src/services/SolicitudService.ts`** — Recibe la conexión por inyección
 
 ```typescript
 export class SolicitudService {
   private pool: Pool;
 
-  // ✅ Recibe pool desde afuera (inyección)
-  // ❌ NO hace: this.pool = new Pool(...)
+
   constructor(pool: Pool) {
     this.pool = pool;
   }
 }
 ```
 
-- ✅ No crea su propia conexión
-- ✅ Recibe la conexión como parámetro
-- ✅ Si cambio de base de datos, no toco este archivo
+- No crea su propia conexión
+- Recibe la conexión como parámetro
+- Si cambio de base de datos, no toco este archivo
 
 ---
 
-**📁 `src/controllers/SolicitudController.ts`** — Recibe el servicio por inyección
+**`src/controllers/SolicitudController.ts`** — Recibe el servicio por inyección
 
 ```typescript
 export class SolicitudController {
   private service: SolicitudService;
 
-  // ✅ Recibe servicio desde afuera (inyección)
-  // ❌ NO hace: this.service = new SolicitudService(...)
+  // Recibe servicio desde afuera (inyección)
+  // NO hace: this.service = new SolicitudService(...)
   constructor(service: SolicitudService) {
     this.service = service;
   }
 }
 ```
 
-- ✅ No crea su propio servicio
-- ✅ Recibe el servicio como parámetro
-- ✅ Facilita hacer pruebas (se puede inyectar un mock)
+- No crea su propio servicio
+- Recibe el servicio como parámetro
+- Facilita hacer pruebas (se puede inyectar un mock)
 
 ---
 
@@ -296,34 +356,10 @@ export class SolicitudController {
 - **LSP (Liskov):** No aplica porque no uso herencia de clases en el proyecto.
 - **ISP (Interface Segregation):** No lo apliqué porque no tengo interfaces grandes con métodos innecesarios. Cada clase tiene solo los métodos que necesita.
 
----
-
-## 📂 Estructura del Proyecto
-
-```
-Practica1/
-├── src/
-│   ├── config/
-│   │   └── database.ts            → Conexión a BD (SRP)
-│   ├── models/
-│   │   └── Solicitud.ts           → Tipos de datos (SRP)
-│   ├── services/
-│   │   └── SolicitudService.ts    → Lógica de negocio (SRP + DIP)
-│   ├── controllers/
-│   │   └── SolicitudController.ts → Manejo HTTP (SRP + DIP)
-│   ├── routes/
-│   │   └── solicitudRoutes.ts     → Rutas (SRP)
-│   └── index.ts                   → Inyección de dependencias (DIP)
-├── .env.example
-├── .gitignore
-├── package.json
-├── tsconfig.json
-└── README.md
-```
 
 ---
 
-## 🧪 Pruebas
+## Pruebas
 
 ```bash
 # Ejecutar servidor
