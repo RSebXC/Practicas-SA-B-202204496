@@ -39,7 +39,7 @@ Cada microservicio tiene:
 
 ## Arquitectura General
 
-`diagramas/arquitectura-general.png`
+![Arquitectura](diagramas/arquitectura.png)
 
 ---
 
@@ -294,6 +294,7 @@ Servicio Emisor → RabbitMQ → Servicio Consumidor
 
 ## Flujo de Aprobación
 
+![Flujo](diagramas/DiagramaFlujo.png)
 
 
 ### Reglas del Flujo:
@@ -399,25 +400,22 @@ Los administradores pueden consultar logs por:
 Los diagramas ER completos se encuentran en la carpeta `diagramas/er/`:
 
 ### Auth Service DB
-
+![ER1](diagramas/er/ER_auth.png)
 
 ### Payroll Service DB
-
-
+![ER2](diagramas/er/ER_payroll.png)
 ### Approval Service DB
-
+![ER3](diagramas/er/ER_approval.png)
 
 ### Storage Service DB
-
+![ER4](diagramas/er/ER_storage.png)
 
 ### Notification Service DB
-
-
+![ER5](diagramas/er/ER_notification.png)
 ### Financial Service DB
-
-
+![ER6](diagramas/er/ER_financial.png)
 ### Logging Service DB
-
+![ER7](diagramas/er/ER_logging.png)
 
 ---
 
