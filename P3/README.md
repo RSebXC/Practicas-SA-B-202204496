@@ -39,7 +39,7 @@ Cada microservicio tiene:
 
 ## Arquitectura General
 
-![Arquitectura](diagramas/arquitectura.png)
+![Arquitectura](diagramas/Arquitectura.png)
 
 ---
 
