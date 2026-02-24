@@ -1,0 +1,1066 @@
+openapi: 3.0.3
+info:
+  title: Sistema de Gestión de Planillas — API P4
+  description: |
+    Documentación completa de la API del Sistema de Planillas basado en microservicios.
+    
+    ## Arquitectura
+    - **API Gateway** (`:3000`) — Punto de entrada único
+    - **Auth Service** (`:4000`) — Autenticación y autorización (JWT + AES-256 + bcrypt)
+    - **Payroll Service** (`:4001`) — Gestión de planillas (GraphQL + CSV upload)
+    - **Approval Service** (`:4002`) — Flujo de aprobaciones (GraphQL 3 pasos)
+    - **Notification Service** (`:4003`) — Envío de notificaciones
+    
+    ## Autenticación
+    Todos los endpoints (excepto register y login) requieren el header:
+    ```
+    Authorization: Bearer <JWT_TOKEN>
+    ```
+    El token se obtiene del endpoint de login y expira en 15 minutos.
+  version: 1.0.0
+  contact:
+    name: Rodrigo Sebastián Castro Aguilar
+    email: rodrigo@test.com
+  license:
+    name: USAC — Software Avanzado Sección B
+
+servers:
+  - url: http://localhost:3000
+    description: API Gateway (desarrollo local)
+  - url: http://localhost:4000
+    description: Auth Service (directo)
+  - url: http://localhost:4001
+    description: Payroll Service (directo)
+  - url: http://localhost:4002
+    description: Approval Service (directo)
+  - url: http://localhost:4003
+    description: Notification Service (directo)
+
+tags:
+  - name: Gateway
+    description: Endpoints del API Gateway
+  - name: Auth
+    description: Registro, login y gestión de sesiones
+  - name: Payroll
+    description: Gestión de planillas y empleados
+  - name: Payroll GraphQL
+    description: Operaciones GraphQL del Payroll Service
+  - name: Approval
+    description: Flujo de aprobación de planillas
+  - name: Approval GraphQL
+    description: Operaciones GraphQL del Approval Service
+  - name: Notifications
+    description: Envío y consulta de notificaciones
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token JWT obtenido del endpoint de login
+
+  schemas:
+    # ── Auth ──────────────────────────────────────────────
+    RegisterRequest:
+      type: object
+      required: [username, email, password, full_name]
+      properties:
+        username:
+          type: string
+          example: rodrigo
+        email:
+          type: string
+          format: email
+          example: rodrigo@test.com
+        password:
+          type: string
+          format: password
+          minLength: 6
+          example: Password123!
+        full_name:
+          type: string
+          example: Rodrigo Castro
+        role:
+          type: string
+          enum: [admin, cliente]
+          default: cliente
+          example: admin
+
+    RegisterResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Usuario registrado
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            email:
+              type: string
+              example: rodrigo@test.com
+            role:
+              type: string
+              example: admin
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          example: rodrigo@test.com
+        password:
+          type: string
+          format: password
+          example: Password123!
+
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Login exitoso
+        token:
+          type: string
+          description: JWT para usar en Authorization header
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            email:
+              type: string
+              example: rodrigo@test.com
+            role:
+              type: string
+              example: admin
+            username:
+              type: string
+              example: rodrigo
+            full_name:
+              type: string
+              example: Rodrigo Castro
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: rodrigo
+        email:
+          type: string
+          example: rodrigo@test.com
+        full_name:
+          type: string
+          example: Rodrigo Castro
+        role:
+          type: string
+          example: admin
+        created_at:
+          type: string
+          format: date-time
+
+    ValidateResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+          example: true
+        user:
+          type: object
+          properties:
+            userId:
+              type: integer
+              example: 1
+            email:
+              type: string
+              example: rodrigo@test.com
+            role:
+              type: string
+              example: admin
+
+    # ── Payroll ───────────────────────────────────────────
+    Payroll:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Planilla Enero 2025
+        period:
+          type: string
+          example: 2025-01
+        status:
+          type: string
+          enum: [PENDIENTE, VALIDANDO, PENDIENTE_APROBACION, APROBADA, RECHAZADA, COMPLETADA]
+          example: PENDIENTE
+        total_employees:
+          type: integer
+          example: 5
+        total_amount:
+          type: number
+          format: float
+          example: 27850.00
+        created_by:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+
+    CSVUploadResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: CSV cargado
+        total_employees:
+          type: integer
+          example: 5
+        total_amount:
+          type: number
+          example: 27850.00
+
+    # ── GraphQL Request ───────────────────────────────────
+    GraphQLRequest:
+      type: object
+      required: [query]
+      properties:
+        query:
+          type: string
+          description: Query o mutation GraphQL
+          example: "{ payrolls { id name status } }"
+        variables:
+          type: object
+          description: Variables opcionales para la query
+          additionalProperties: true
+
+    GraphQLResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          additionalProperties: true
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+
+    # ── Approval ──────────────────────────────────────────
+    Approval:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        payroll_id:
+          type: integer
+          example: 1
+        step:
+          type: integer
+          enum: [1, 2, 3]
+          example: 1
+        status:
+          type: string
+          enum: [PENDIENTE, APROBADO, RECHAZADA, APROBADA_FINAL]
+          example: PENDIENTE
+        approver_id:
+          type: integer
+          nullable: true
+          example: 2
+        approver_role:
+          type: string
+          nullable: true
+          example: SUPERVISOR
+        comments:
+          type: string
+          nullable: true
+          example: Todo en orden
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # ── Notification ──────────────────────────────────────
+    NotificationRequest:
+      type: object
+      required: [to, subject, body]
+      properties:
+        to:
+          type: string
+          format: email
+          example: empleado@empresa.com
+        subject:
+          type: string
+          example: Planilla aprobada
+        body:
+          type: string
+          example: Su planilla ha sido aprobada exitosamente.
+        notification_type:
+          type: string
+          default: INFO
+          example: APPROVAL
+
+    BulkNotificationRequest:
+      type: object
+      required: [recipients, subject, body]
+      properties:
+        recipients:
+          type: array
+          items:
+            type: string
+            format: email
+          example: [empleado1@empresa.com, empleado2@empresa.com]
+        subject:
+          type: string
+          example: Aviso de nómina
+        body:
+          type: string
+          example: Su pago ha sido procesado.
+        notification_type:
+          type: string
+          default: INFO
+
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        to:
+          type: string
+          example: empleado@empresa.com
+        subject:
+          type: string
+          example: Planilla aprobada
+        body:
+          type: string
+          example: Su planilla ha sido aprobada.
+        type:
+          type: string
+          example: APPROVAL
+        status:
+          type: string
+          example: SENT
+        sent_at:
+          type: string
+          format: date-time
+
+    # ── Errores ───────────────────────────────────────────
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Descripción del error
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: UP
+        service:
+          type: string
+          example: API Gateway
+
+paths:
+
+  # ════════════════════════════════════════════════════════
+  # GATEWAY
+  # ════════════════════════════════════════════════════════
+  /health:
+    get:
+      tags: [Gateway]
+      summary: Health check del API Gateway
+      description: Verifica que el Gateway está operativo y muestra las URLs de los servicios internos.
+      responses:
+        '200':
+          description: Gateway operativo
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/HealthResponse'
+                  - type: object
+                    properties:
+                      services:
+                        type: object
+                        properties:
+                          auth: { type: string }
+                          payroll: { type: string }
+                          approval: { type: string }
+                          notification: { type: string }
+              example:
+                status: UP
+                service: API Gateway
+                services:
+                  auth: http://auth-service:4000
+                  payroll: http://payroll-service:4001
+                  approval: http://approval-service:4002
+                  notification: http://notification-service:4003
+
+  /:
+    get:
+      tags: [Gateway]
+      summary: Información del sistema
+      responses:
+        '200':
+          description: Información del sistema y endpoints disponibles
+          content:
+            application/json:
+              example:
+                name: P4 - API Gateway
+                student: Rodrigo Sebastian Castro Aguilar - 202204496
+                endpoints:
+                  auth: /api/auth/*
+                  payroll: /api/payroll/*
+                  approval: /api/approval/*
+                  notification: /api/notifications/*
+
+  # ════════════════════════════════════════════════════════
+  # AUTH SERVICE
+  # ════════════════════════════════════════════════════════
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      summary: Registrar nuevo usuario
+      description: |
+        Crea un nuevo usuario en el sistema.
+        - El username y full_name se almacenan encriptados con AES-256
+        - La contraseña se hashea con bcrypt (10 rounds)
+        - Se emite un JWT automáticamente y se guarda en cookie HttpOnly
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '400':
+          description: Datos inválidos o email ya registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                emailExistente:
+                  value: { error: Email ya registrado }
+                camposFaltantes:
+                  value: { error: Todos los campos son requeridos }
+
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Iniciar sesión
+      description: |
+        Autentica al usuario y devuelve un JWT.
+        El token también se guarda en una cookie HttpOnly (15 minutos de expiración).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Credenciales inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Credenciales inválidas
+
+  /api/auth/me:
+    get:
+      tags: [Auth]
+      summary: Obtener perfil del usuario autenticado
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Perfil del usuario (datos desencriptados)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Token requerido o inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Cerrar sesión
+      description: Elimina la cookie de autenticación del cliente.
+      responses:
+        '200':
+          description: Sesión cerrada
+          content:
+            application/json:
+              example:
+                message: Sesión cerrada
+
+  /api/auth/validate:
+    get:
+      tags: [Auth]
+      summary: Validar token JWT
+      description: Usado internamente por los microservicios para verificar tokens.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Token válido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateResponse'
+        '401':
+          description: Token inválido o expirado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ════════════════════════════════════════════════════════
+  # PAYROLL SERVICE — REST
+  # ════════════════════════════════════════════════════════
+  /api/payroll/health:
+    get:
+      tags: [Payroll]
+      summary: Health check del Payroll Service
+      responses:
+        '200':
+          description: Servicio operativo
+          content:
+            application/json:
+              example:
+                status: UP
+                service: Payroll Service
+                port: 4001
+
+  /api/payroll/payroll/{id}/upload-csv:
+    post:
+      tags: [Payroll]
+      summary: Cargar empleados desde archivo CSV
+      description: |
+        Carga masiva de empleados a una planilla existente mediante archivo CSV.
+        
+        **Formato del CSV:**
+        ```
+        codigo,nombre,email,departamento,salario_base,bonificaciones,deducciones
+        EMP001,Juan Perez,juan@empresa.com,Tecnologia,5000.00,500.00,200.00
+        ```
+        
+        El servicio calcula automáticamente: `salario_neto = salario_base + bonificaciones - deducciones`
+        
+        Al completar la carga, la planilla pasa al estado `VALIDANDO`.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la planilla
+          example: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Archivo CSV con los empleados
+      responses:
+        '200':
+          description: CSV procesado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CSVUploadResponse'
+        '400':
+          description: Archivo CSV no proporcionado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Token requerido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error al procesar el CSV
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ════════════════════════════════════════════════════════
+  # PAYROLL SERVICE — GRAPHQL
+  # ════════════════════════════════════════════════════════
+  /api/payroll/graphql:
+    post:
+      tags: [Payroll GraphQL]
+      summary: Endpoint GraphQL del Payroll Service
+      description: |
+        Endpoint GraphQL para gestión completa de planillas.
+        
+        ## Queries disponibles
+        
+        **Listar todas las planillas:**
+        ```graphql
+        query {
+          payrolls {
+            id name period status total_employees total_amount created_by created_at
+          }
+        }
+        ```
+        
+        **Obtener planilla con empleados:**
+        ```graphql
+        query {
+          payroll(id: 1) {
+            payroll { id name status total_amount }
+            employees { codigo nombre email departamento salario_base bonificaciones deducciones salario_neto }
+          }
+        }
+        ```
+        
+        **Planillas por estado:**
+        ```graphql
+        query {
+          payrollsByStatus(status: "PENDIENTE") {
+            id name period status
+          }
+        }
+        ```
+        
+        ## Mutations disponibles
+        
+        **Crear planilla:**
+        ```graphql
+        mutation {
+          createPayroll(name: "Planilla Enero", period: "2025-01", created_by: 1) {
+            id name status
+          }
+        }
+        ```
+        
+        **Actualizar estado:**
+        ```graphql
+        mutation {
+          updatePayrollStatus(id: 1, status: "PENDIENTE_APROBACION") {
+            id status
+          }
+        }
+        ```
+        
+        **Eliminar planilla:**
+        ```graphql
+        mutation {
+          deletePayroll(id: 1)
+        }
+        ```
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphQLRequest'
+            examples:
+              listarPlanillas:
+                summary: Listar todas las planillas
+                value:
+                  query: "{ payrolls { id name period status total_employees total_amount } }"
+              crearPlanilla:
+                summary: Crear planilla
+                value:
+                  query: "mutation { createPayroll(name: \"Planilla Enero\", period: \"2025-01\", created_by: 1) { id name status } }"
+              obtenerDetalle:
+                summary: Detalle con empleados
+                value:
+                  query: "{ payroll(id: 1) { payroll { id name status } employees { nombre salario_neto } } }"
+      responses:
+        '200':
+          description: Respuesta GraphQL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphQLResponse'
+              examples:
+                listarPlanillas:
+                  value:
+                    data:
+                      payrolls:
+                        - id: 1
+                          name: Planilla Enero
+                          period: 2025-01
+                          status: PENDIENTE
+                          total_employees: 0
+                          total_amount: 0
+                crearPlanilla:
+                  value:
+                    data:
+                      createPayroll:
+                        id: 1
+                        name: Planilla Enero
+                        status: PENDIENTE
+
+  # ════════════════════════════════════════════════════════
+  # APPROVAL SERVICE — GRAPHQL
+  # ════════════════════════════════════════════════════════
+  /api/approval/graphql:
+    post:
+      tags: [Approval GraphQL]
+      summary: Endpoint GraphQL del Approval Service
+      description: |
+        Endpoint GraphQL para gestión del flujo de aprobaciones de planillas.
+        
+        ## Flujo de aprobación
+        
+        ```
+        createApproval → Paso 1 (SUPERVISOR)
+                       → approveStep → Paso 2 (GERENTE)
+                       → approveStep → Paso 3 (DIRECTOR)
+                       → approveStep → APROBADA_FINAL
+        ```
+        
+        En cualquier paso se puede llamar `rejectApproval` para rechazar.
+        
+        ## Queries disponibles
+        
+        **Listar todas las aprobaciones:**
+        ```graphql
+        query {
+          approvals {
+            id payroll_id step status approver_role created_at
+          }
+        }
+        ```
+        
+        **Obtener aprobación de una planilla:**
+        ```graphql
+        query {
+          approval(payroll_id: 1) {
+            id step status approver_role comments updated_at
+          }
+        }
+        ```
+        
+        **Por estado:**
+        ```graphql
+        query {
+          approvalsByStatus(status: "PENDIENTE") {
+            id payroll_id step
+          }
+        }
+        ```
+        
+        ## Mutations disponibles
+        
+        **Iniciar flujo de aprobación:**
+        ```graphql
+        mutation {
+          createApproval(payroll_id: 1) {
+            success message
+            approval { id step status }
+          }
+        }
+        ```
+        
+        **Aprobar paso actual:**
+        ```graphql
+        mutation {
+          approveStep(payroll_id: 1, approver_id: 2, approver_role: "SUPERVISOR", comments: "Revisado") {
+            success message
+            approval { step status }
+          }
+        }
+        ```
+        
+        **Rechazar planilla:**
+        ```graphql
+        mutation {
+          rejectApproval(payroll_id: 1, approver_id: 2, comments: "Errores en montos") {
+            success message
+            approval { status comments }
+          }
+        }
+        ```
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphQLRequest'
+            examples:
+              iniciarAprobacion:
+                summary: Iniciar flujo de aprobación
+                value:
+                  query: "mutation { createApproval(payroll_id: 1) { success message approval { id step status } } }"
+              aprobarPaso:
+                summary: Aprobar paso actual
+                value:
+                  query: "mutation { approveStep(payroll_id: 1, approver_id: 2, approver_role: \"SUPERVISOR\", comments: \"OK\") { success message approval { step status } } }"
+              rechazar:
+                summary: Rechazar planilla
+                value:
+                  query: "mutation { rejectApproval(payroll_id: 1, approver_id: 2, comments: \"Montos incorrectos\") { success message } }"
+      responses:
+        '200':
+          description: Respuesta GraphQL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphQLResponse'
+              examples:
+                crearAprobacion:
+                  value:
+                    data:
+                      createApproval:
+                        success: true
+                        message: "Flujo creado — Paso 1 pendiente"
+                        approval:
+                          id: 1
+                          step: 1
+                          status: PENDIENTE
+                aprobarPaso:
+                  value:
+                    data:
+                      approveStep:
+                        success: true
+                        message: "Paso 1 aprobado. Ahora en paso 2"
+                        approval:
+                          step: 2
+                          status: PENDIENTE
+
+  /api/approval/health:
+    get:
+      tags: [Approval GraphQL]
+      summary: Health check del Approval Service
+      responses:
+        '200':
+          description: Servicio operativo
+          content:
+            application/json:
+              example:
+                status: UP
+                service: Approval Service
+
+  # ════════════════════════════════════════════════════════
+  # NOTIFICATION SERVICE
+  # ════════════════════════════════════════════════════════
+  /api/notifications/send:
+    post:
+      tags: [Notifications]
+      summary: Enviar notificación individual
+      description: Envía una notificación de correo a un destinatario específico.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRequest'
+      responses:
+        '200':
+          description: Notificación enviada
+          content:
+            application/json:
+              example:
+                message: Notificación enviada
+                notification:
+                  id: 1
+                  to: empleado@empresa.com
+                  subject: Planilla aprobada
+                  status: SENT
+                  sent_at: "2025-01-15T10:30:00"
+        '401':
+          description: Token inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/notifications/bulk:
+    post:
+      tags: [Notifications]
+      summary: Enviar notificación masiva
+      description: Envía la misma notificación a múltiples destinatarios en una sola llamada.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkNotificationRequest'
+      responses:
+        '200':
+          description: Notificaciones enviadas
+          content:
+            application/json:
+              example:
+                message: 3 notificaciones enviadas
+                total: 3
+                notifications:
+                  - id: 1
+                    to: emp1@empresa.com
+                    status: SENT
+                  - id: 2
+                    to: emp2@empresa.com
+                    status: SENT
+
+  /api/notifications:
+    get:
+      tags: [Notifications]
+      summary: Listar historial de notificaciones
+      description: Retorna todas las notificaciones enviadas en la sesión actual.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de notificaciones
+          content:
+            application/json:
+              example:
+                total: 2
+                notifications:
+                  - id: 1
+                    to: empleado@empresa.com
+                    subject: Planilla aprobada
+                    type: APPROVAL
+                    status: SENT
+                    sent_at: "2025-01-15T10:30:00"
+
+  /api/notifications/payroll-approved:
+    post:
+      tags: [Notifications]
+      summary: Notificar aprobación de planilla
+      description: Envía notificación predefinida de aprobación a una lista de destinatarios.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: payroll_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: recipients
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+              format: email
+          example: [empleado@empresa.com, rrhh@empresa.com]
+      responses:
+        '200':
+          description: Notificaciones de aprobación enviadas
+          content:
+            application/json:
+              example:
+                message: Notificaciones enviadas
+                total: 2
+
+  /api/notifications/payroll-rejected:
+    post:
+      tags: [Notifications]
+      summary: Notificar rechazo de planilla
+      description: Envía notificación predefinida de rechazo con el motivo.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: payroll_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: recipients
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+              format: email
+        - name: reason
+          in: query
+          required: false
+          schema:
+            type: string
+          example: Errores en los montos de salario
+      responses:
+        '200':
+          description: Notificaciones de rechazo enviadas
+          content:
+            application/json:
+              example:
+                message: Notificaciones enviadas
+                total: 2
+
+  /api/notifications/health:
+    get:
+      tags: [Notifications]
+      summary: Health check del Notification Service
+      responses:
+        '200':
+          description: Servicio operativo
+          content:
+            application/json:
+              example:
+                status: UP
+                service: Notification Service
+                total_sent: 5

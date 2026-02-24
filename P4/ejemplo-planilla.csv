@@ -1,0 +1,6 @@
+codigo,nombre,email,departamento,salario_base,bonificaciones,deducciones
+EMP001,Juan Perez,juan@empresa.com,Tecnologia,5000.00,500.00,200.00
+EMP002,Maria Garcia,maria@empresa.com,Recursos Humanos,4500.00,300.00,150.00
+EMP003,Carlos Lopez,carlos@empresa.com,Finanzas,6000.00,800.00,300.00
+EMP004,Ana Martinez,ana@empresa.com,Tecnologia,5500.00,600.00,250.00
+EMP005,Luis Rodriguez,luis@empresa.com,Marketing,4000.00,400.00,180.00

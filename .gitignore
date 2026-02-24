@@ -1,0 +1,221 @@
+# ============================================
+# GITIGNORE - Práctica 4 - Microservicios
+# ============================================
+
+# ============================================
+# NODE.JS (auth-service, api-gateway)
+# ============================================
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# ============================================
+# PYTHON (approval-service)
+# ============================================
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Python build
+*.egg-info/
+dist/
+build/
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ============================================
+# VARIABLES DE ENTORNO
+# ============================================
+
+# CRÍTICO: Nunca subir credenciales
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+*.env
+
+# ============================================
+# DOCKER
+# ============================================
+
+# Docker volumes
+docker-compose.override.yml
+.dockerignore
+
+# ============================================
+# BASES DE DATOS
+# ============================================
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# PostgreSQL
+*.sql
+
+# Dumps
+*.dump
+
+# ============================================
+# LOGS
+# ============================================
+
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# ============================================
+# EDITORES E IDEs
+# ============================================
+
+# VSCode
+.vscode/
+.vscode-test/
+*.code-workspace
+
+# JetBrains (IntelliJ, WebStorm, PyCharm)
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ============================================
+# SISTEMA OPERATIVO
+# ============================================
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================
+# ARCHIVOS TEMPORALES
+# ============================================
+
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+.#*
+
+# ============================================
+# TESTING
+# ============================================
+
+coverage/
+.nyc_output/
+*.lcov
+.coverage
+htmlcov/
+test-results/
+junit.xml
+
+# ============================================
+# ARCHIVOS SENSIBLES (NUNCA SUBIR)
+# ============================================
+
+# Credenciales
+credentials.json
+secrets.json
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+*.jks
+
+# Tokens
+token.json
+.token
+access_token
+
+# ============================================
+# ARCHIVOS DE EJEMPLO/UPLOADS
+# ============================================
+
+# Mantener los archivos de ejemplo pero ignorar uploads reales
+# uploads/
+# !uploads/.gitkeep
+# ejemplo-planilla.csv ya está en el repo, no ignorar
+
+# ============================================
+# CACHE Y TEMPORALES
+# ============================================
+
+.cache/
+.temp/
+.tmp/
+*.cache
+
+# ============================================
+# ESPECÍFICO DEL PROYECTO
+# ============================================
+
+# Archivos de backup
+*.backup
+
+# Archivos de testing local
+test-local/
+scratch/
+playground/
+
+

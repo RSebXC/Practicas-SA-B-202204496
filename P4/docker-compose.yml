@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: p4_api_gateway
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      AUTH_SERVICE_URL: http://auth-service:4000
+      PAYROLL_SERVICE_URL: http://payroll-service:4001
+      APPROVAL_SERVICE_URL: http://approval-service:4002
+      NOTIFICATION_SERVICE_URL: http://notification-service:4003
+    depends_on:
+      - auth-service
+      - payroll-service
+      - approval-service
+      - notification-service
+    networks:
+      - p4_net
+    restart: unless-stopped
+
+  auth-service:
+    build: ./auth-service
+    container_name: p4_auth_service
+    ports:
+      - "4000:4000"
+    env_file: .env
+    environment:
+      PORT: 4000
+    networks:
+      - p4_net
+    restart: unless-stopped
+
+  payroll-service:
+    build: ./payroll-service
+    container_name: p4_payroll_service
+    ports:
+      - "4001:4001"
+    env_file: .env
+    environment:
+      PORT: 4001
+    networks:
+      - p4_net
+    restart: unless-stopped
+
+  approval-service:
+    build: ./approval-service
+    container_name: p4_approval_service
+    ports:
+      - "4002:4002"
+    env_file: .env
+    environment:
+      PORT: 4002
+    networks:
+      - p4_net
+    restart: unless-stopped
+
+  notification-service:
+    build: ./notification-service
+    container_name: p4_notification_service
+    ports:
+      - "4003:4003"
+    env_file: .env
+    environment:
+      PORT: 4003
+    networks:
+      - p4_net
+    restart: unless-stopped
+
+networks:
+  p4_net:
+    driver: bridge
