@@ -5,25 +5,11 @@
 Facultad de Ingeniería — ECYS  
 Software Avanzado — Sección B  
 
-| Campo | Detalle |
-|-------|---------|
-| Estudiante | Rodrigo Sebastián Castro Aguilar |
-| Carné | 202204496 |
-| Sección | B |
-| Fecha | Febrero 2026 |
-
----
-
-## Tabla de Contenidos
-
-1. [Descripción del Sistema](#1-descripción-del-sistema)
-2. [Microservicios — Justificación y Funcionamiento](#2-microservicios--justificación-y-funcionamiento)
-3. [Tecnologías Utilizadas](#3-tecnologías-utilizadas--justificación)
-4. [Justificación de los Diagramas](#4-justificación-de-los-diagramas)
-5. [Swagger — Contrato de Microservicios](#5-swagger--contrato-de-microservicios)
-6. [Modelo de Seguridad](#6-modelo-de-seguridad)
-7. [Instrucciones de Despliegue](#7-instrucciones-de-despliegue)
-8. [Cumplimiento de la Rúbrica](#8-cumplimiento-de-la-rúbrica)
+### Información:
+Rodrigo Sebastián Castro Aguilar  
+Carné: 202204496 
+Sección B 
+Fecha Febrero 2026
 
 ---
 
@@ -35,12 +21,7 @@ El sistema está compuesto por cinco contenedores Docker independientes que se c
 
 ### 1.1 Flujo General del Sistema
 
-```
-Cliente → API Gateway → Auth Service     → DB Usuarios
-                      → Payroll Service  → DB Planillas
-                      → Approval Service → DB Aprobaciones
-                      → Notification Service
-```
+![Diagrama de Flujo General](./Diagramas/Flujo.png)
 
 El proceso completo sigue esta secuencia lógica:
 
@@ -53,7 +34,7 @@ El proceso completo sigue esta secuencia lógica:
 
 ---
 
-## 2. Microservicios — Justificación y Funcionamiento
+## 2. Microservicios
 
 ### 2.1 API Gateway — TypeScript | Puerto 3000
 
@@ -247,7 +228,7 @@ Para proteger datos sensibles se implementaron dos estrategias complementarias:
 
 ---
 
-## 4. Justificación de los Diagramas
+## 4. Diagramas
 
 ### 4.1 Diagrama de Arquitectura
 
@@ -261,6 +242,8 @@ Muestra la visión conceptual del sistema desde la perspectiva de comunicación 
 
 Es el primer documento que debe consultarse para entender el sistema a alto nivel. Sigue el principio de Separación de Preocupaciones: cada caja tiene una sola razón para existir.
 
+![Diagrama de Arquitectura](./Diagramas/Arquitectura.jpeg)
+
 ---
 
 ### 4.2 Diagramas ER por Microservicio
@@ -268,8 +251,16 @@ Es el primer documento que debe consultarse para entender el sistema a alto nive
 Se diseñaron **tres diagramas ER separados** (uno por microservicio con base de datos) en lugar de un único diagrama consolidado. Esta decisión refleja la filosofía de microservicios: **cada servicio es dueño de sus datos**.
 
 - **ER Auth Service:** Entidad `users` con campos encriptados marcados explícitamente. El Auth Service conoce todo sobre la identidad pero nada sobre el negocio.
+
+![ER Auth Service](./Diagramas/ER_USERS.png)
+
 - **ER Payroll Service:** Dos entidades relacionadas `payrolls` y `payroll_employees` con relación 1:N.
+
+![ER Payroll Service](./Diagramas/ER_PAYROLLS.png)
+
 - **ER Approval Service:** Entidad `approvals` con referencias lógicas (no FK físicas) a datos de otros servicios — en microservicios las FK cruzadas entre servicios se evitan para mantener el desacoplamiento.
+
+![ER Approval Service](./Diagramas/ER_APROVAL.png)
 
 ---
 
@@ -278,6 +269,8 @@ Se diseñaron **tres diagramas ER separados** (uno por microservicio con base de
 Muestra la perspectiva operacional: **cómo los contenedores Docker se organizan en la infraestructura real**, qué puertos se exponen, cómo se comunican internamente, y cuáles son las dependencias de servicios externos.
 
 Es el documento de referencia para DevOps. Muestra explícitamente la red Docker `p4_net` como el bus de comunicación interno, y las conexiones SSL hacia Supabase en la nube.
+
+![Diagrama de Despliegue](./Diagramas/despliegue.png)
 
 ---
 
@@ -291,7 +284,7 @@ Swagger (OpenAPI 3.0) es el estándar de la industria para documentar APIs REST.
 - Mecanismo de autenticación (Bearer JWT)
 - Códigos de respuesta posibles (200, 201, 400, 401, 404, 503)
 
-> **Cómo visualizarlo:** Copia el contenido de `docs/swagger.yaml` y pégalo en https://editor.swagger.io — se genera automáticamente una interfaz interactiva donde puedes probar cada endpoint.
+> **Cómo visualizarlo:** Copia el contenido de [Swagger.yml](Swagger.yml) y pégalo en https://editor.swagger.io — se genera automáticamente una interfaz interactiva donde puedes probar cada endpoint.
 
 El contrato sirve como acuerdo entre el backend y cualquier cliente. Si un endpoint cambia sin actualizar el swagger, el contrato se rompe — esto es especialmente crítico en microservicios donde múltiples equipos pueden consumir los mismos APIs.
 
@@ -309,83 +302,6 @@ El sistema implementa seguridad en capas (defensa en profundidad):
 | Datos en reposo | AES-256 + bcrypt | Datos sensibles nunca en texto plano |
 | API | Rate Limiting 200/15min | Protección contra abuso y DDoS básico |
 | Cookies | HttpOnly + SameSite:strict | Protección contra XSS y CSRF |
-
----
-
-## 7. Instrucciones de Despliegue
-
-### 7.1 Prerequisitos
-
-- Docker Desktop instalado y corriendo
-- Git para clonar el repositorio
-- Cuenta en Supabase con proyecto creado
-
-### 7.2 Pasos
-
-```bash
-# 1. Clonar el repositorio
-git clone https://github.com/TU_USUARIO/Practicas-SA-B-202204496.git
-cd Practicas-SA-B-202204496/P4_final
-
-# 2. Configurar variables de entorno
-cp .env.example .env
-# Editar .env con credenciales reales de Supabase
-
-# 3. Ejecutar el SQL en Supabase SQL Editor
-# (Archivo: database.sql)
-
-# 4. Levantar todos los servicios
-docker-compose up --build
-
-# 5. Verificar que todo esté UP
-curl http://localhost:3000/health
-```
-
-### 7.3 Variables de Entorno
-
-| Variable | Descripción | Ejemplo |
-|----------|-------------|---------|
-| `DB_HOST` | Host del pooler de Supabase | `aws-0-us-west-2.pooler.supabase.com` |
-| `DB_PORT` | Puerto del pooler | `6543` |
-| `DB_NAME` | Nombre de la base de datos | `postgres` |
-| `DB_USER` | Usuario con project ref | `postgres.xjfoiwqfcigxbmgzmhmb` |
-| `DB_PASSWORD` | Contraseña de Supabase | `tu_password` |
-| `JWT_SECRET` | Secreto para firmar tokens JWT | Mínimo 32 caracteres |
-| `AES_SECRET_KEY` | Clave para cifrado AES-256 | Mínimo 32 caracteres |
-
-### 7.4 Endpoints Principales
-
-| Servicio | URL | Tipo |
-|---------|-----|------|
-| API Gateway | `http://localhost:3000` | REST |
-| Auth — Register | `POST http://localhost:3000/api/auth/register` | REST |
-| Auth — Login | `POST http://localhost:3000/api/auth/login` | REST |
-| Payroll — GraphQL | `POST http://localhost:3000/api/payroll/graphql` | GraphQL |
-| Payroll — CSV Upload | `POST http://localhost:3000/api/payroll/payroll/:id/upload-csv` | REST multipart |
-| Approval — GraphQL | `POST http://localhost:3000/api/approval/graphql` | GraphQL |
-| Notifications — Send | `POST http://localhost:3000/api/notifications/send` | REST |
-
----
-
-## 8. Cumplimiento de la Rúbrica
-
-| Requisito | Implementación | Estado |
-|-----------|---------------|--------|
-| 4 microservicios mínimo | Auth, Payroll, Approval, Notification + Gateway (5 total) | ✅ CUMPLE |
-| 1 endpoint por servicio | Múltiples endpoints en cada servicio | ✅ CUMPLE |
-| Dockerfile por servicio | 5 Dockerfiles (node:20-alpine / python:3.11-slim) | ✅ CUMPLE |
-| docker-compose.yml | Orquesta 5 servicios con red y variables de entorno | ✅ CUMPLE |
-| API Gateway funcional | Express en :3000 con proxy a todos los servicios | ✅ CUMPLE |
-| 2 lenguajes distintos | TypeScript (3 servicios) + Python (2 servicios) | ✅ CUMPLE |
-| GraphQL en 2 servicios | Apollo Server (Payroll) + Strawberry (Approval) | ✅ CUMPLE |
-| Auth Service de P2 | Integrado como microservicio con JWT + AES + bcrypt | ✅ CUMPLE |
-| Diagrama de arquitectura | Mermaid architecture-beta en `docs/` | ✅ CUMPLE |
-| Diagrama de despliegue | Mermaid con contenedores Docker en `docs/` | ✅ CUMPLE |
-| Diagrama ER | 3 diagramas separados por microservicio en `docs/` | ✅ CUMPLE |
-| Contrato Swagger | OpenAPI 3.0 completo en `docs/swagger.yaml` | ✅ CUMPLE |
-| Repositorio GitHub | `Practicas-SA-B-202204496` / carpeta `P4` | ✅ CUMPLE |
-| BD separada por servicio | Tablas independientes por microservicio *(recomendado)* | ✅ CUMPLE |
-| Comunicación entre MS | Payroll→Approval, Approval→Notification *(recomendado)* | ✅ CUMPLE |
 
 ---
 
