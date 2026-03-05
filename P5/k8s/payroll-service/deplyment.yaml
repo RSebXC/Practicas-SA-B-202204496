@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payroll-service
+  namespace: sa-p5
+  labels:
+    app: payroll-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payroll-service
+  template:
+    metadata:
+      labels:
+        app: payroll-service
+    spec:
+      containers:
+        - name: payroll-service
+          image: payroll-service:v1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 4001
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: p5-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: p5-config
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: p5-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: p5-config
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: p5-secrets
+                  key: DB_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: p5-secrets
+                  key: JWT_SECRET
+            - name: AES_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: p5-secrets
+                  key: AES_SECRET_KEY
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4001
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 4001
+            initialDelaySeconds: 15
+            periodSeconds: 5

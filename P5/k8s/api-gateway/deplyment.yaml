@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: sa-p5
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: api-gateway:v1
+          imagePullPolicy: Never        # usa imagen local de minikube
+          ports:
+            - containerPort: 3000
+          env:
+            - name: AUTH_SERVICE_URL
+              value: "http://auth-service:4000"
+            - name: PAYROLL_SERVICE_URL
+              value: "http://payroll-service:4001"
+            - name: APPROVAL_SERVICE_URL
+              value: "http://approval-service:4002"
+            - name: NOTIFICATION_SERVICE_URL
+              value: "http://notification-service:4003"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5

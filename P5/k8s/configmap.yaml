@@ -1,0 +1,11 @@
+# k8s/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: p5-config
+  namespace: sa-p5
+data:
+  DB_PORT: "5432"
+  DB_NAME: "neondb"
+  DB_USER: "neondb_owner"
+  DB_HOST: "ep-square-waterfall-aikitb1a-pooler.c-4.us-east-1.aws.neon.tech"
