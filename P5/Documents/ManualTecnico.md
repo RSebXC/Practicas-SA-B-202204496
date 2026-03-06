@@ -1,4 +1,8 @@
 # Documentacion Tecnica — Practica 5
+## Diagrama de Arquitectura
+
+![Diagrama de Arquitectura](Diagramas/P5-SA.drawio.png)
+
 ## Despliegue en Kubernetes — Sistema de Gestion de Planillas
 
 **Universidad San Carlos de Guatemala**
@@ -23,8 +27,6 @@ Kubernetes es una plataforma de orquestacion de contenedores de codigo abierto d
 A diferencia de Docker Compose que corre contenedores en una sola maquina, Kubernetes puede gestionar contenedores distribuidos en multiples nodos fisicos o virtuales, garantizando alta disponibilidad, recuperacion automatica ante fallos, y escalado horizontal sin intervencion manual.
 
 Los componentes principales de un cluster de Kubernetes son el plano de control (API Server, etcd, Scheduler, Controller Manager) y los nodos trabajadores donde corren los pods con las aplicaciones.
-
-En esta practica se utiliza Minikube, que es una implementacion local de Kubernetes que crea un cluster de un solo nodo usando Docker como driver, permitiendo simular un entorno de produccion en una maquina de desarrollo.
 
 ---
 
@@ -237,57 +239,3 @@ minikube delete
 Elimina completamente el cluster de Minikube incluyendo todas las imagenes, configuraciones y datos almacenados.
 
 ---
-
-## 3. Estructura del Repositorio
-
-```
-P5/
-├── api-gateway/
-│   ├── Dockerfile
-│   ├── package.json
-│   └── src/
-├── auth-service/
-│   ├── Dockerfile
-│   └── src/
-├── payroll-service/
-│   ├── Dockerfile
-│   └── src/
-├── approval-service/
-│   ├── Dockerfile
-│   └── main.py
-├── notification-service/
-│   ├── Dockerfile
-│   └── main.py
-└── k8s/
-    ├── namespace.yaml
-    ├── configmap.yaml
-    ├── secret.yaml
-    ├── api-gateway/
-    │   ├── deployment.yaml
-    │   ├── service.yaml
-    │   └── hpa.yaml
-    ├── auth-service/
-    │   ├── deployment.yaml
-    │   ├── service.yaml
-    │   └── hpa.yaml
-    ├── payroll-service/
-    │   ├── deployment.yaml
-    │   ├── service.yaml
-    │   └── hpa.yaml
-    ├── approval-service/
-    │   ├── deployment.yaml
-    │   ├── service.yaml
-    │   └── hpa.yaml
-    ├── notification-service/
-    │   ├── deployment.yaml
-    │   ├── service.yaml
-    │   └── hpa.yaml
-    └── cronjob/
-        ├── cronjob.yaml
-        ├── Dockerfile
-        └── script.py
-```
-
----
-
-*Rodrigo Sebastian Castro Aguilar — 202204496 — Software Avanzado Seccion B — USAC 2026*
