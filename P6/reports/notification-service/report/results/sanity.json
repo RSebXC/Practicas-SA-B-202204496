@@ -1,0 +1,161 @@
+{
+  "version": "3",
+  "listProblem": [
+    {
+      "tool": "Code Inspection",
+      "category": "Python",
+      "categoryPath": [
+        {
+          "id": "Python",
+          "name": "Python"
+        }
+      ],
+      "type": "Unresolved references",
+      "tags": [
+        "Python",
+        "Sanity"
+      ],
+      "severity": "Critical",
+      "comment": "Unresolved reference 'HTTPException'",
+      "detailsInfo": "Reports references in your code that cannot be resolved.\n\nIn a dynamically typed language, this is possible in a limited number of cases.\n\nIf a reference type is unknown, then its attributes are not highlighted as unresolved even if you know that they should be:\n\n\n    def print_string(s):\n      print(s.abc())\n\nIn this code fragment `s` is always a string and `abc` should be highlighted as unresolved. However, `s`\ntype is inferred as `Any` and no warning is reported.\n\nThe IDE provides quick-fix actions to add missing references on-the-fly.",
+      "sources": [
+        {
+          "type": "file",
+          "path": "main.py",
+          "language": "Python",
+          "line": 4,
+          "offset": 30,
+          "length": 13,
+          "code": {
+            "startLine": 2,
+            "length": 13,
+            "offset": 95,
+            "surroundingCode": "from datetime import datetime\r\nfrom typing import List, Optional\r\nfrom fastapi import FastAPI, HTTPException, Header\r\nfrom pydantic import BaseModel\r\nfrom jose import jwt, JWTError\r"
+          }
+        }
+      ],
+      "attributes": {
+        "module": "project",
+        "inspectionName": "PyUnresolvedReferencesInspection"
+      },
+      "hash": "0a9a8cf205d55c89f17f60083d299dfb63ae1ebb67baa534e9feee9d04247e99"
+    },
+    {
+      "tool": "Code Inspection",
+      "category": "Python",
+      "categoryPath": [
+        {
+          "id": "Python",
+          "name": "Python"
+        }
+      ],
+      "type": "Unresolved references",
+      "tags": [
+        "Python",
+        "Sanity"
+      ],
+      "severity": "Critical",
+      "comment": "Unresolved reference 'fastapi'",
+      "detailsInfo": "Reports references in your code that cannot be resolved.\n\nIn a dynamically typed language, this is possible in a limited number of cases.\n\nIf a reference type is unknown, then its attributes are not highlighted as unresolved even if you know that they should be:\n\n\n    def print_string(s):\n      print(s.abc())\n\nIn this code fragment `s` is always a string and `abc` should be highlighted as unresolved. However, `s`\ntype is inferred as `Any` and no warning is reported.\n\nThe IDE provides quick-fix actions to add missing references on-the-fly.",
+      "sources": [
+        {
+          "type": "file",
+          "path": "main.py",
+          "language": "Python",
+          "line": 4,
+          "offset": 6,
+          "length": 7,
+          "code": {
+            "startLine": 2,
+            "length": 7,
+            "offset": 71,
+            "surroundingCode": "from datetime import datetime\r\nfrom typing import List, Optional\r\nfrom fastapi import FastAPI, HTTPException, Header\r\nfrom pydantic import BaseModel\r\nfrom jose import jwt, JWTError\r"
+          }
+        }
+      ],
+      "attributes": {
+        "module": "project",
+        "inspectionName": "PyUnresolvedReferencesInspection"
+      },
+      "hash": "31f826ad660ece8c1496c6763ffaee643ae0491af27b303d21c21fa656d6e76b"
+    },
+    {
+      "tool": "Code Inspection",
+      "category": "Python",
+      "categoryPath": [
+        {
+          "id": "Python",
+          "name": "Python"
+        }
+      ],
+      "type": "Unresolved references",
+      "tags": [
+        "Python",
+        "Sanity"
+      ],
+      "severity": "Critical",
+      "comment": "Unresolved reference 'Header'",
+      "detailsInfo": "Reports references in your code that cannot be resolved.\n\nIn a dynamically typed language, this is possible in a limited number of cases.\n\nIf a reference type is unknown, then its attributes are not highlighted as unresolved even if you know that they should be:\n\n\n    def print_string(s):\n      print(s.abc())\n\nIn this code fragment `s` is always a string and `abc` should be highlighted as unresolved. However, `s`\ntype is inferred as `Any` and no warning is reported.\n\nThe IDE provides quick-fix actions to add missing references on-the-fly.",
+      "sources": [
+        {
+          "type": "file",
+          "path": "main.py",
+          "language": "Python",
+          "line": 4,
+          "offset": 45,
+          "length": 6,
+          "code": {
+            "startLine": 2,
+            "length": 6,
+            "offset": 110,
+            "surroundingCode": "from datetime import datetime\r\nfrom typing import List, Optional\r\nfrom fastapi import FastAPI, HTTPException, Header\r\nfrom pydantic import BaseModel\r\nfrom jose import jwt, JWTError\r"
+          }
+        }
+      ],
+      "attributes": {
+        "module": "project",
+        "inspectionName": "PyUnresolvedReferencesInspection"
+      },
+      "hash": "371594385c6e9fe7fb3ea8ca49fd2c63883ce152fde0af3c7ce4cda192cd63c2"
+    },
+    {
+      "tool": "Code Inspection",
+      "category": "Python",
+      "categoryPath": [
+        {
+          "id": "Python",
+          "name": "Python"
+        }
+      ],
+      "type": "Unresolved references",
+      "tags": [
+        "Python",
+        "Sanity"
+      ],
+      "severity": "Critical",
+      "comment": "Unresolved reference 'FastAPI'",
+      "detailsInfo": "Reports references in your code that cannot be resolved.\n\nIn a dynamically typed language, this is possible in a limited number of cases.\n\nIf a reference type is unknown, then its attributes are not highlighted as unresolved even if you know that they should be:\n\n\n    def print_string(s):\n      print(s.abc())\n\nIn this code fragment `s` is always a string and `abc` should be highlighted as unresolved. However, `s`\ntype is inferred as `Any` and no warning is reported.\n\nThe IDE provides quick-fix actions to add missing references on-the-fly.",
+      "sources": [
+        {
+          "type": "file",
+          "path": "main.py",
+          "language": "Python",
+          "line": 4,
+          "offset": 21,
+          "length": 7,
+          "code": {
+            "startLine": 2,
+            "length": 7,
+            "offset": 86,
+            "surroundingCode": "from datetime import datetime\r\nfrom typing import List, Optional\r\nfrom fastapi import FastAPI, HTTPException, Header\r\nfrom pydantic import BaseModel\r\nfrom jose import jwt, JWTError\r"
+          }
+        }
+      ],
+      "attributes": {
+        "module": "project",
+        "inspectionName": "PyUnresolvedReferencesInspection"
+      },
+      "hash": "67105c031564e678e738c02204b53ecbc154a8e22f65e371101377a548d1987f"
+    }
+  ]
+}

@@ -1,0 +1,287 @@
+{
+  "$schema": "https://raw.githubusercontent.com/schemastore/schemastore/master/src/schemas/json/sarif-2.1.0-rtm.5.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "QDPYC",
+          "fullName": "Qodana Community for Python",
+          "version": "243.25481",
+          "rules": [],
+          "taxa": [],
+          "language": "en-US",
+          "contents": [
+            "localizedData",
+            "nonLocalizedData"
+          ],
+          "isComprehensive": false
+        },
+        "extensions": []
+      },
+      "invocations": [
+        {
+          "startTimeUtc": "2026-03-10T04:29:20.957867623Z",
+          "exitCode": 0,
+          "executionSuccessful": true
+        }
+      ],
+      "language": "en-US",
+      "versionControlProvenance": [
+        {
+          "properties": {
+            "repoUrl": "",
+            "vcsType": "Git"
+          }
+        }
+      ],
+      "results": [],
+      "automationDetails": {
+        "id": "project/qodana/2026-03-10",
+        "guid": "0f9dc0e5-6836-42b4-942c-14e83a9ef269",
+        "properties": {
+          "jobUrl": "",
+          "analysisKind": "regular"
+        }
+      },
+      "newlineSequences": [
+        "\r\n",
+        "\n"
+      ],
+      "properties": {
+        "qodana.sanity.results": [
+          {
+            "ruleId": "PyUnresolvedReferencesInspection",
+            "kind": "fail",
+            "level": "error",
+            "message": {
+              "text": "Unresolved reference 'HTTPException'",
+              "markdown": "Unresolved reference 'HTTPException'"
+            },
+            "locations": [
+              {
+                "physicalLocation": {
+                  "artifactLocation": {
+                    "uri": "main.py",
+                    "uriBaseId": "SRCROOT"
+                  },
+                  "region": {
+                    "startLine": 4,
+                    "startColumn": 30,
+                    "charOffset": 106,
+                    "charLength": 13,
+                    "snippet": {
+                      "text": "HTTPException"
+                    },
+                    "sourceLanguage": "Python"
+                  },
+                  "contextRegion": {
+                    "startLine": 2,
+                    "startColumn": 1,
+                    "charOffset": 11,
+                    "charLength": 181,
+                    "snippet": {
+                      "text": "from datetime import datetime\r\nfrom typing import List, Optional\r\nfrom fastapi import FastAPI, HTTPException, Header\r\nfrom pydantic import BaseModel\r\nfrom jose import jwt, JWTError\r"
+                    },
+                    "sourceLanguage": "Python"
+                  }
+                },
+                "logicalLocations": [
+                  {
+                    "fullyQualifiedName": "project",
+                    "kind": "module"
+                  }
+                ]
+              }
+            ],
+            "partialFingerprints": {
+              "equalIndicator/v2": "640136a43579d2ef",
+              "equalIndicator/v1": "0a9a8cf205d55c89f17f60083d299dfb63ae1ebb67baa534e9feee9d04247e99"
+            },
+            "properties": {
+              "ideaSeverity": "ERROR",
+              "qodanaSeverity": "Critical",
+              "tags": [
+                "Python"
+              ]
+            }
+          },
+          {
+            "ruleId": "PyUnresolvedReferencesInspection",
+            "kind": "fail",
+            "level": "error",
+            "message": {
+              "text": "Unresolved reference 'fastapi'",
+              "markdown": "Unresolved reference 'fastapi'"
+            },
+            "locations": [
+              {
+                "physicalLocation": {
+                  "artifactLocation": {
+                    "uri": "main.py",
+                    "uriBaseId": "SRCROOT"
+                  },
+                  "region": {
+                    "startLine": 4,
+                    "startColumn": 6,
+                    "charOffset": 82,
+                    "charLength": 7,
+                    "snippet": {
+                      "text": "fastapi"
+                    },
+                    "sourceLanguage": "Python"
+                  },
+                  "contextRegion": {
+                    "startLine": 2,
+                    "startColumn": 1,
+                    "charOffset": 11,
+                    "charLength": 181,
+                    "snippet": {
+                      "text": "from datetime import datetime\r\nfrom typing import List, Optional\r\nfrom fastapi import FastAPI, HTTPException, Header\r\nfrom pydantic import BaseModel\r\nfrom jose import jwt, JWTError\r"
+                    },
+                    "sourceLanguage": "Python"
+                  }
+                },
+                "logicalLocations": [
+                  {
+                    "fullyQualifiedName": "project",
+                    "kind": "module"
+                  }
+                ]
+              }
+            ],
+            "partialFingerprints": {
+              "equalIndicator/v2": "21d167450cebed08",
+              "equalIndicator/v1": "31f826ad660ece8c1496c6763ffaee643ae0491af27b303d21c21fa656d6e76b"
+            },
+            "properties": {
+              "ideaSeverity": "ERROR",
+              "qodanaSeverity": "Critical",
+              "tags": [
+                "Python"
+              ]
+            }
+          },
+          {
+            "ruleId": "PyUnresolvedReferencesInspection",
+            "kind": "fail",
+            "level": "error",
+            "message": {
+              "text": "Unresolved reference 'Header'",
+              "markdown": "Unresolved reference 'Header'"
+            },
+            "locations": [
+              {
+                "physicalLocation": {
+                  "artifactLocation": {
+                    "uri": "main.py",
+                    "uriBaseId": "SRCROOT"
+                  },
+                  "region": {
+                    "startLine": 4,
+                    "startColumn": 45,
+                    "charOffset": 121,
+                    "charLength": 6,
+                    "snippet": {
+                      "text": "Header"
+                    },
+                    "sourceLanguage": "Python"
+                  },
+                  "contextRegion": {
+                    "startLine": 2,
+                    "startColumn": 1,
+                    "charOffset": 11,
+                    "charLength": 181,
+                    "snippet": {
+                      "text": "from datetime import datetime\r\nfrom typing import List, Optional\r\nfrom fastapi import FastAPI, HTTPException, Header\r\nfrom pydantic import BaseModel\r\nfrom jose import jwt, JWTError\r"
+                    },
+                    "sourceLanguage": "Python"
+                  }
+                },
+                "logicalLocations": [
+                  {
+                    "fullyQualifiedName": "project",
+                    "kind": "module"
+                  }
+                ]
+              }
+            ],
+            "partialFingerprints": {
+              "equalIndicator/v2": "318ff753f542cbdc",
+              "equalIndicator/v1": "371594385c6e9fe7fb3ea8ca49fd2c63883ce152fde0af3c7ce4cda192cd63c2"
+            },
+            "properties": {
+              "ideaSeverity": "ERROR",
+              "qodanaSeverity": "Critical",
+              "tags": [
+                "Python"
+              ]
+            }
+          },
+          {
+            "ruleId": "PyUnresolvedReferencesInspection",
+            "kind": "fail",
+            "level": "error",
+            "message": {
+              "text": "Unresolved reference 'FastAPI'",
+              "markdown": "Unresolved reference 'FastAPI'"
+            },
+            "locations": [
+              {
+                "physicalLocation": {
+                  "artifactLocation": {
+                    "uri": "main.py",
+                    "uriBaseId": "SRCROOT"
+                  },
+                  "region": {
+                    "startLine": 4,
+                    "startColumn": 21,
+                    "charOffset": 97,
+                    "charLength": 7,
+                    "snippet": {
+                      "text": "FastAPI"
+                    },
+                    "sourceLanguage": "Python"
+                  },
+                  "contextRegion": {
+                    "startLine": 2,
+                    "startColumn": 1,
+                    "charOffset": 11,
+                    "charLength": 181,
+                    "snippet": {
+                      "text": "from datetime import datetime\r\nfrom typing import List, Optional\r\nfrom fastapi import FastAPI, HTTPException, Header\r\nfrom pydantic import BaseModel\r\nfrom jose import jwt, JWTError\r"
+                    },
+                    "sourceLanguage": "Python"
+                  }
+                },
+                "logicalLocations": [
+                  {
+                    "fullyQualifiedName": "project",
+                    "kind": "module"
+                  }
+                ]
+              }
+            ],
+            "partialFingerprints": {
+              "equalIndicator/v2": "f6a12837000bfccb",
+              "equalIndicator/v1": "67105c031564e678e738c02204b53ecbc154a8e22f65e371101377a548d1987f"
+            },
+            "properties": {
+              "ideaSeverity": "ERROR",
+              "qodanaSeverity": "Critical",
+              "tags": [
+                "Python"
+              ]
+            }
+          }
+        ],
+        "configProfile": "absent",
+        "deviceId": "200820300000000-0000-0000-0000-000000000000",
+        "qodanaNewResultSummary": {
+          "high": 2,
+          "total": 2
+        }
+      }
+    }
+  ]
+}

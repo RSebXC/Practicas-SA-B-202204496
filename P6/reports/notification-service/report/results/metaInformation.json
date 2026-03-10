@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "total": 2,
+  "tools inspection": {
+    "Code Inspection": 2
+  },
+  "linter": "QDPYC",
+  "attributes": {
+    "deviceId": "200820300000000-0000-0000-0000-000000000000",
+    "jobUrl": "",
+    "vcs": {
+      "sarifIdea": {}
+    },
+    "repoUrl": ""
+  },
+  "linterVersion": "243.25481"
+}

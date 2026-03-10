@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "name": "project",
+  "path": "/data/project",
+  "projectLicenses": [
+    {
+      "key": "PROPRIETARY-LICENSE",
+      "rules": [],
+      "tags": []
+    }
+  ],
+  "modules": [
+    {
+      "name": "project:JS",
+      "path": "/data/project",
+      "licenses": [
+        {
+          "key": "PROPRIETARY-LICENSE",
+          "rules": [],
+          "tags": []
+        }
+      ],
+      "dependencies": []
+    }
+  ],
+  "licenses": [],
+  "dependencies": []
+}

@@ -1,0 +1,81 @@
+{
+  "version": "3",
+  "listProblem": [
+    {
+      "tool": "Code Inspection",
+      "category": "Python",
+      "categoryPath": [
+        {
+          "id": "Python",
+          "name": "Python"
+        }
+      ],
+      "type": "Deprecated function, class, or module",
+      "tags": [
+        "Python"
+      ],
+      "severity": "High",
+      "comment": "Use timezone-aware objects to represent datetimes in UTC; e.g. by calling .now(datetime.UTC)",
+      "detailsInfo": "Reports usages of Python functions, or methods that are marked as\ndeprecated and raise the `DeprecationWarning` or `PendingDeprecationWarning` warning.\n\nAlso, this inspection highlights usages of `abc.abstractstaticmethod`, `abc.abstractproperty`, and `abc.abstractclassmethod`\ndecorators.\n\n**Example:**\n\n\n    class Foo:\n        @property\n        def bar(self):\n            import warnings\n            warnings.warn(\"this is deprecated\", DeprecationWarning, 2)\n            return 5\n\n\n    foo = Foo()\n    print(foo.bar)\n",
+      "sources": [
+        {
+          "type": "file",
+          "path": "main.py",
+          "language": "Python",
+          "line": 37,
+          "offset": 34,
+          "length": 6,
+          "code": {
+            "startLine": 35,
+            "length": 6,
+            "offset": 153,
+            "surroundingCode": "    entry = {\"id\": counter, \"to\": to, \"subject\": subject,\r\n             \"body\": body, \"type\": ntype, \"status\": \"SENT\",\r\n             \"sent_at\": datetime.utcnow().isoformat()}\r\n    log.append(entry)\r\n    print(f\"[Notification] EMAIL → {to} | {subject}\")\r"
+          }
+        }
+      ],
+      "attributes": {
+        "module": "project",
+        "inspectionName": "PyDeprecationInspection"
+      },
+      "hash": "70dbb850f48583f41fd0983431d72245189692fdc059fb4427720971afa121bc"
+    },
+    {
+      "tool": "Code Inspection",
+      "category": "Python",
+      "categoryPath": [
+        {
+          "id": "Python",
+          "name": "Python"
+        }
+      ],
+      "type": "Unsatisfied package requirements",
+      "tags": [
+        "Python"
+      ],
+      "severity": "High",
+      "comment": "Package requirements 'fastapi==0.109.0', 'uvicorn==0.27.0', 'python-jose\\[cryptography\\]==3.3.0', 'pydantic==2.5.3' are not satisfied",
+      "detailsInfo": "Reports packages mentioned in requirements files (for example, `requirements.txt` or `Pipfile`) but not installed,\nor imported but not mentioned in requirements files.\n\n\nThe IDE shows a quick-fix banner so that you can install the missing packages in one click.",
+      "sources": [
+        {
+          "type": "file",
+          "path": "main.py",
+          "language": "Python",
+          "line": 1,
+          "offset": 1,
+          "length": 3185,
+          "code": {
+            "startLine": 1,
+            "length": 3185,
+            "offset": 0,
+            "surroundingCode": "import os\r\nfrom datetime import datetime\r\nfrom typing import List, Optional\r\nfrom fastapi import FastAPI, HTTPException, Header\r\nfrom pydantic import BaseModel\r\nfrom jose import jwt, JWTError\r\n\r\nJWT_SECRET = os.getenv(\"JWT_SECRET\", \"secret\")\r\n\r\n# ── Modelos ──────────────────────────────────────────────────────────────────\r\nclass NotificationRequest(BaseModel):\r\n    to: str\r\n    subject: str\r\n    body: str\r\n    notification_type: str = \"INFO\"\r\n\r\nclass BulkRequest(BaseModel):\r\n    recipients: List[str]\r\n    subject: str\r\n    body: str\r\n    notification_type: str = \"INFO\"\r\n\r\n# ── Estado en memoria ─────────────────────────────────────────────────────────\r\nlog: List[dict] = []\r\ncounter = 0\r\n\r\ndef verify(authorization: str) -> dict:\r\n    token = authorization.replace(\"Bearer \", \"\")\r\n    try:    return jwt.decode(token, JWT_SECRET, algorithms=[\"HS256\"])\r\n    except JWTError: raise HTTPException(401, \"Token inválido\")\r\n\r\ndef send(to: str, subject: str, body: str, ntype: str) -> dict:\r\n    global counter\r\n    counter += 1\r\n    entry = {\"id\": counter, \"to\": to, \"subject\": subject,\r\n             \"body\": body, \"type\": ntype, \"status\": \"SENT\",\r\n             \"sent_at\": datetime.utcnow().isoformat()}\r\n    log.append(entry)\r\n    print(f\"[Notification] EMAIL → {to} | {subject}\")\r\n    return entry\r\n\r\n# ── App ──────────────────────────────────────────────────────────────────────\r\napp = FastAPI(title=\"Notification Service\")\r\n\r\n@app.get(\"/health\")\r\ndef health():\r\n    return {\"status\": \"UP\", \"service\": \"Notification Service\", \"total_sent\": len(log)}\r\n\r\n@app.post(\"/api/notifications/send\")\r\ndef send_one(payload: NotificationRequest, authorization: str = Header(...)):\r\n    verify(authorization)\r\n    return {\"message\": \"Notificación enviada\", \"notification\": send(payload.to, payload.subject, payload.body, payload.notification_type)}\r\n\r\n@app.post(\"/api/notifications/bulk\")\r\ndef send_bulk(payload: BulkRequest, authorization: str = Header(...)):\r\n    verify(authorization)\r\n    sent = [send(r, payload.subject, payload.body, payload.notification_type) for r in payload.recipients]\r\n    return {\"message\": f\"{len(sent)} notificaciones enviadas\", \"total\": len(sent), \"notifications\": sent}\r\n\r\n@app.get(\"/api/notifications\")\r\ndef list_notifications(authorization: str = Header(...)):\r\n    verify(authorization)\r\n    return {\"total\": len(log), \"notifications\": log}\r\n\r\n@app.post(\"/api/notifications/payroll-approved\")\r\ndef payroll_approved(payroll_id: int, recipients: List[str], authorization: str = Header(...)):\r\n    verify(authorization)\r\n    sent = [send(e, f\"Planilla #{payroll_id} Aprobada\",\r\n                 f\"La planilla #{payroll_id} fue aprobada exitosamente.\", \"APPROVAL\") for e in recipients]\r\n    return {\"message\": \"Notificaciones enviadas\", \"total\": len(sent)}\r\n\r\n@app.post(\"/api/notifications/payroll-rejected\")\r\ndef payroll_rejected(payroll_id: int, recipients: List[str],\r\n                     reason: Optional[str] = \"Sin motivo\", authorization: str = Header(...)):\r\n    verify(authorization)\r\n    sent = [send(e, f\"Planilla #{payroll_id} Rechazada\",\r\n                 f\"La planilla #{payroll_id} fue rechazada. Motivo: {reason}\", \"REJECTION\") for e in recipi"
+          }
+        }
+      ],
+      "attributes": {
+        "module": "project",
+        "inspectionName": "PyPackageRequirementsInspection"
+      },
+      "hash": "a93527e24b3e3c2252705a6c363b7dd21a66aa453c97bcb0e7766505046a24fa"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "SPDXRef-project",
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://project-98f54143-ab4e-86b2-8c3a-fee0f50f2f51",
+  "creationInfo": {
+    "creators": [
+      "Tool: Qodana",
+      "Organization: JetBrains s.r.o."
+    ],
+    "created": "2026-03-10T04:20:48Z"
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-project",
+      "name": "project",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "LicenseRef-PROPRIETARY-LICENSE",
+      "licenseDeclared": "NOASSERTION",
+      "licenseInfoFromFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION",
+      "supplier": "NOASSERTION",
+      "primaryPackagePurpose": "SOURCE"
+    },
+    {
+      "SPDXID": "SPDXRef-project-JS",
+      "name": "project:JS",
+      "versionInfo": "1.0.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "LicenseRef-PROPRIETARY-LICENSE",
+      "licenseDeclared": "NOASSERTION",
+      "licenseInfoFromFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION",
+      "supplier": "NOASSERTION",
+      "primaryPackagePurpose": "SOURCE"
+    }
+  ],
+  "files": [],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-project"
+    },
+    {
+      "spdxElementId": "SPDXRef-project",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-project-JS",
+      "comment": "Module of the project"
+    }
+  ],
+  "hasExtractedLicensingInfos": [
+    {
+      "licenseId": "LicenseRef-PROPRIETARY-LICENSE",
+      "extractedText": "Qodana didn't find a license in your project, that's why the project license is considered to be proprietary. Proprietary license rules are applied for dependency license compatibility checks."
+    }
+  ]
+}

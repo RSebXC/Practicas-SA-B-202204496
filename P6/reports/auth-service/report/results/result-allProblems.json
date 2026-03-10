@@ -1,0 +1,32 @@
+{"version":"3","listProblem":[{
+  "tool": "Code Inspection",
+  "category": "Async code and promises",
+  "type": "Redundant 'await' expression",
+  "tags": [
+    "TypeScript"
+  ],
+  "severity": "Moderate",
+  "comment": "Redundant 'await' for a non-promise type",
+  "detailsInfo": "Reports a redundant usage of `await`, such as `await await`, or awaiting a non-promise result.\n\n\nWhen the 'Report for promises' option is selected, suggests removing `await` before promises when applicable\n(in `return` statements, and with `Promise.resolve/reject`).\n\nRemoving `await` in such contexts causes two problems.\n\n* Surrounding your code with `try-catch` and forgetting to add `await` will change code semantics while you may fail to notice that.\n* Having an explicit `await` may prevent the V8 runtime from providing [async stack traces](http://bit.ly/v8-zero-cost-async-stack-traces).",
+  "sources": [
+    {
+      "type": "file",
+      "path": "src/services/authService.ts",
+      "language": "TypeScript",
+      "line": 44,
+      "offset": 17,
+      "length": 50,
+      "code": {
+        "startLine": 42,
+        "length": 50,
+        "offset": 56,
+        "surroundingCode": "\r\n  const user: User = result.rows[0];\r\n  const valid = await bcrypt.compare(data.password, user.password);\r\n  if (!valid) throw new Error('Credenciales inválidas');\r\n\r"
+      }
+    }
+  ],
+  "attributes": {
+    "module": "project",
+    "inspectionName": "ES6RedundantAwait"
+  },
+  "hash": "a649ae250b7878c7171f8886fff38ce2604b77a61d87d4a5d3be9b0a83ef69b4"
+}]}
