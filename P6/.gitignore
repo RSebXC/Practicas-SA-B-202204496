@@ -1,0 +1,14 @@
+# Ignorar archivos pesados del reporte de Qodana
+reports/**/versions/
+reports/**/js/
+reports/**/css/
+reports/**/fonts/
+reports/**/*.ico
+reports/**/manifest.json
+
+#ignorar carpeta log
+reports/**/log/
+
+# Mantener solo los resultados importantes
+!reports/**/result-allProblems.json
+!reports/**/index.html

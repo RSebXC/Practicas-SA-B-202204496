@@ -1,0 +1,18 @@
+version: "1.0"
+
+profile:
+  name: qodana.starter
+
+include:
+  - name: ES6RedundantAwait
+  - name: PyDeprecationInspection
+  - name: PyPackageRequirementsInspection
+
+exclude:
+  - name: All
+    paths:
+      - node_modules
+      - dist
+      - .git
+
+bootstrap: ""
