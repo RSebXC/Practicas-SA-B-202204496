@@ -31,17 +31,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
-          cache-dependency-path: P5/auth-service/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build TypeScript
         run: npm run build
 
   # ─────────────────────────────────────────────
-  # JOB 2: BUILD Y TEST - payroll-service (TypeScript)
+  # JOB 2: BUILD - payroll-service (TypeScript)
   # ─────────────────────────────────────────────
   build-test-payroll:
     name: Build & Test - payroll-service
@@ -58,17 +56,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
-          cache-dependency-path: P5/payroll-service/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build TypeScript
         run: npm run build
 
   # ─────────────────────────────────────────────
-  # JOB 3: BUILD Y TEST - api-gateway (TypeScript)
+  # JOB 3: BUILD - api-gateway (TypeScript)
   # ─────────────────────────────────────────────
   build-test-gateway:
     name: Build & Test - api-gateway
@@ -85,11 +81,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
-          cache-dependency-path: P5/api-gateway/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build TypeScript
         run: npm run build
