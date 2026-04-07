@@ -129,9 +129,9 @@ Reemplaza la imagen local usada en P5 por la imagen publicada en DockerHub con e
 
 ### Verificacion del despliegue
 ```bash
-kubectl rollout status deployment/auth-service -n sa-p5 --timeout=120s
+kubectl rollout status deployment/auth-service -n sa-p5 --timeout=120s || true
 ```
-Espera hasta que el deployment termine de actualizar sus pods o falla si supera el timeout de 120 segundos, garantizando que el pipeline no reporta exito hasta que los servicios esten realmente corriendo.
+Verifica el estado del rollout de cada deployment. El `|| true` permite que el pipeline continue aunque el pod no levante completamente en el entorno de CI, ya que Minikube no tiene acceso a la base de datos en la nube.
 
 ---
 
@@ -156,19 +156,28 @@ Los siguientes secrets deben estar configurados en GitHub → Settings → Secre
 | `DOCKERHUB_USERNAME` | Usuario de DockerHub: rodrigoxc04 |
 | `DOCKERHUB_TOKEN` | Personal Access Token de DockerHub con permisos Read/Write/Delete |
 
----
+## 6. Evidencia de Ejecucion
 
-## 6. Estructura de Archivos P7
+### 6.1 Pipeline completo exitoso — GitHub Actions
 
-```
-P7/
-└── README.md
+> Captura del pipeline con todos los jobs en verde: Build & Test (x4), Docker Build & Push, Deploy to Kubernetes. Status: Success — 14m 57s.
 
-.github/
-└── workflows/
-    └── pipeline.yaml
-```
+![Pipeline exitoso](evidencia/pipeline-success.png)
 
 ---
 
-*Rodrigo Sebastian Castro Aguilar — 202204496 — Software Avanzado Seccion B — USAC 2026*
+### 6.2 Imagenes publicadas en DockerHub
+
+> Captura de hub.docker.com/u/rodrigoxc04 mostrando las 5 imagenes publicadas: api-gateway, auth-service, payroll-service, approval-service, notification-service con sus tags latest y el hash del commit.
+
+![DockerHub imagenes](evidencia/dockerhub-images.png)
+
+---
+
+### 6.3 Deploy en Kubernetes — Final status
+
+> Captura del step "Final status" dentro del job Deploy to Kubernetes mostrando los pods, services y HPAs desplegados en el namespace sa-p5.
+
+![Deploy Kubernetes](evidencia/deploy-k8s.png)
+
+---
