@@ -43,34 +43,7 @@ El modelo utiliza la columna `Close` como variable objetivo ya que representa el
 
 ## 3. Arquitectura del Sistema
 
-```
-Cliente (Postman / curl)
-        |
-        | HTTP POST /predict
-        |
-   [NodePort :30500]
-        |
-   Service: gold-prediction (Kubernetes)
-        |
-   Deployment: gold-prediction
-        |
-   Pod: gold-prediction
-        |
-   FastAPI (uvicorn :5000)
-        |
-   ┌────────────────────────────┐
-   │  build_features_for_       │
-   │  prediction()              │
-   │  - 8 lag features          │
-   │  - 12 rolling features     │
-   │  - 3 diff features         │
-   │  Total: 27 features        │
-   └────────────┬───────────────┘
-                |
-   RandomForestRegressor (.pkl)
-                |
-   predicted_price (USD/oz troy)
-```
+![Arquitectura del Sistema](img/diagrama.png)
 
 ---
 
@@ -401,7 +374,7 @@ minikube service gold-prediction -n sa-p5 --url
 
 > Captura de Postman o navegador mostrando el POST a /predict con respuesta exitosa 200 OK.
 
-![Prediccion exitosa](evidencia/predict-response.png)
+![Prediccion exitosa](img/img2.png)
 
 ---
 
@@ -409,7 +382,7 @@ minikube service gold-prediction -n sa-p5 --url
 
 > Captura del comando `kubectl get all -n sa-p5` mostrando el pod gold-prediction en estado Running junto con los demas microservicios.
 
-![Pods en Kubernetes](evidencia/pods-running.png)
+![Pods en Kubernetes](img/img1.png)
 
 ---
 
@@ -417,20 +390,6 @@ minikube service gold-prediction -n sa-p5 --url
 
 > Captura de http://localhost:5000/docs mostrando los endpoints disponibles de la API.
 
-![Swagger UI](evidencia/swagger-ui.png)
+![Swagger UI](img/img3.png)
 
 ---
-
-## 11. Observaciones Tecnicas
-
-**Manejo de columnas del dataset:** El script de entrenamiento detecta automaticamente la columna objetivo buscando keywords como `price`, `close`, `gold` en los nombres de columna, lo que hace al sistema flexible frente a variaciones en el formato del CSV.
-
-**Orden temporal en el split:** El parametro `shuffle=False` en `train_test_split` es fundamental para series de tiempo. Shufflear los datos romperia la dependencia temporal y resultaria en data leakage, produciendo metricas artificialmente optimistas.
-
-**Features on-the-fly:** Los 27 features se recalculan en cada request de inferencia dentro de `build_features_for_prediction()`. Esto garantiza que el proceso de feature engineering sea identico entre entrenamiento e inferencia, evitando training-serving skew.
-
-**Minimo de 30 precios:** El endpoint `/predict` requiere al menos 30 precios historicos porque el lag mas largo es `lag_30` y la ventana de rolling mas grande es 30 dias. Con menos datos no es posible calcular todos los features correctamente.
-
----
-
-*Rodrigo Sebastian Castro Aguilar — 202204496 — Software Avanzado Seccion B — USAC 2026*
