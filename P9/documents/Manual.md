@@ -26,42 +26,7 @@ Esta practica implementa un sistema completo de observabilidad sobre los microse
 
 ## 2. Arquitectura del Sistema
 
-```
-                    NAMESPACE: sa-p5
-         ┌─────────────────────────────────┐
-         │  auth-service    api-gateway     │
-         │  pod :4000       pod :3000       │
-         └──────────┬──────────────────────┘
-                    │ logs + metricas
-                    │
-            NAMESPACE: monitoring
-            ┌───────────────────────────────────────┐
-            │                                       │
-            │  ┌─────────────┐   ┌──────────────┐  │
-            │  │ Prometheus  │   │   Filebeat   │  │
-            │  │ :9090       │   │ (DaemonSet)  │  │
-            │  └──────┬──────┘   └──────┬───────┘  │
-            │         │                 │           │
-            │  ┌──────▼──────┐   ┌──────▼───────┐  │
-            │  │   Grafana   │   │   Logstash   │  │
-            │  │ :3000       │   │ :5044        │  │
-            │  └─────────────┘   └──────┬───────┘  │
-            │                           │           │
-            │                    ┌──────▼───────┐  │
-            │                    │Elasticsearch │  │
-            │                    │ :9200        │  │
-            │                    └──────┬───────┘  │
-            │                           │           │
-            │                    ┌──────▼───────┐  │
-            │                    │    Kibana    │  │
-            │                    │ :5601        │  │
-            └───────────────────────────────────────┘
-
-Acceso externo via NodePort:
-  Prometheus → :30090
-  Grafana    → :30030
-  Kibana     → :30601
-```
+![Arquitectura](../img/image.png)
 
 ---
 
